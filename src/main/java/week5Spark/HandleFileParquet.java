@@ -25,11 +25,11 @@ public class HandleFileParquet {
 
         //Group data lại theo device_model và count số người dùng duy nhất
         Dataset<Row> device_model_num_user = dataframe1.groupBy("device_model").agg(approx_count_distinct("user_id")).withColumnRenamed("approx_count_distinct(user_id)", "count");
-        device_model_num_user.repartition(1).write().mode(SaveMode.Overwrite).option("compression","snappy").parquet("hdfs://10.140.0.5:9000/user/ngocpv22/device_model_num_user");
-
+        device_model_num_user.coalesce(1).write().mode(SaveMode.Overwrite).option("compression","snappy").parquet("hdfs:/user/ngocpv22/device_model_num_user");
         //Group data lại theo device_model và list user duy nhất
         Dataset<Row> device_model_list_user = dataframe1.groupBy("device_model").agg(collect_set("user_id")).withColumnRenamed("collect_set(user_id)", "list_user_id");
-        device_model_list_user.repartition(1).write().mode(SaveMode.Overwrite).option("compression","snappy").orc("hdfs://10.140.0.5:9000/user/ngocpv22/device_model_list_user");
+        device_model_list_user.coalesce(1).write().mode(SaveMode.Overwrite).option("compression","snappy").orc("hdfs:/user/ngocpv22/device_model_list_user");
+        //device_model_list_user.repartition(1)
 
         //Tạo dataframe mới chứa user_id_device_model với nội dung là user_id +_+device_model
         Dataset<Row> dataframe2 = spark.read().parquet("/Sample_data");
@@ -39,6 +39,6 @@ public class HandleFileParquet {
         Dataset<Row> action_by_button_id = dataframe2.withColumn("user_id_device_model",concat(col("user_id"), lit("_"), col("device_model")));
         Dataset<Row> button_count_by_user_id_device_model = action_by_button_id.groupBy("user_id_device_model", "button_id").agg(count("user_id_device_model")).withColumnRenamed("count(user_id_device_model)", "count");
 
-        button_count_by_user_id_device_model.repartition(1).write().mode(SaveMode.Overwrite).option("compression","snappy").parquet("hdfs://10.140.0.5:9000/user/ngocpv22/button_count_by_user_id_device_model");
+        button_count_by_user_id_device_model.coalesce(1).write().mode(SaveMode.Overwrite).option("compression","snappy").parquet("hdfs:/user/ngocpv22/button_count_by_user_id_device_model");
     }
 }
