@@ -21,7 +21,7 @@ import java.util.stream.StreamSupport;
 
 public class ElasticService {
     public static void main(String[] args) throws IOException {
-        System.out.println(getSuggestion("hạ l"));
+        System.out.println(getSuggestion("thành"));
     }
     public static List<String> getSuggestion(String input) throws IOException {
         ClientConfiguration clientConfiguration =
