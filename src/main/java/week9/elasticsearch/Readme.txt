@@ -1,4 +1,5 @@
 Bài 1:
+GET dantri_ngocpv22/_search
 {
     "query": {
         "bool" : {
@@ -8,25 +9,25 @@ Bài 1:
                         "query":  "an toàn",
                         "type":   "phrase",
                         "fields": [ "title", "description", "content"]
-                        }
-                        },
-                        {
-                        "multi_match" : {
+                    }
+                },
+                {
+                    "multi_match" : {
                         "query":  "đường bộ",
                         "type":   "phrase",
                         "fields": [ "title", "description", "content"]
-                        }
-                        },
-                        {
-                        "multi_match" : {
+                    }
+                },
+                {
+                    "multi_match" : {
                         "query":  "đường sắt",
                         "type":   "phrase",
                         "fields": [ "title", "description", "content"]
-                        }
-                        },
-                        {
-                        "range": {
-                            "time": {
+                    }
+                },
+                {
+                    "range": {
+                        "time": {
                             "gte": 1356998400,
                             "lt": 1388534400
                         }
@@ -36,33 +37,29 @@ Bài 1:
         }
     }
 }
-
-
 Bài 2:
 GET dantri_ngocpv22/_search
-
 {
-"query": {
-"bool" : {
-"must" : {
-"prefix": {
-"title.keyword": "Hà Nội"
+    "query": {
+        "bool" : {
+            "must" : {
+                "prefix": {
+                "title.keyword": "Hà Nội"
+            }
+            },
+            "must_not" :{
+                "match_phrase": {
+                    "description": {
+                        "query": "Hà Nội"
+                    }
+                }
+            }
+        }
+    },
+    "sort" : [
+        { "time" : "desc" }
+    ]
 }
-},
-"must_not" :{
-"match_phrase": {
-"description": {
-"query": "Hà Nội"
-}
-}
-}
-}
-},
-"sort" : [
-{ "time" : "desc" }
-]
-}
-
 Bài 3:
 - Code python(main.py) để extract title từ các file data.json
 
@@ -75,7 +72,7 @@ PUT title_suggest_ngoc
     "mappings": {
         "properties" : {
             "suggest_title" : {
-                "type" : "completion"   
+                "type" : "completion"
             }
         }
     }
