@@ -1,3 +1,68 @@
+Bài 1:
+{
+    "query": {
+        "bool" : {
+            "must" : [
+                {
+                    "multi_match" : {
+                        "query":  "an toàn",
+                        "type":   "phrase",
+                        "fields": [ "title", "description", "content"]
+                        }
+                        },
+                        {
+                        "multi_match" : {
+                        "query":  "đường bộ",
+                        "type":   "phrase",
+                        "fields": [ "title", "description", "content"]
+                        }
+                        },
+                        {
+                        "multi_match" : {
+                        "query":  "đường sắt",
+                        "type":   "phrase",
+                        "fields": [ "title", "description", "content"]
+                        }
+                        },
+                        {
+                        "range": {
+                            "time": {
+                            "gte": 1356998400,
+                            "lt": 1388534400
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
+
+
+Bài 2:
+GET dantri_ngocpv22/_search
+
+{
+"query": {
+"bool" : {
+"must" : {
+"prefix": {
+"title.keyword": "Hà Nội"
+}
+},
+"must_not" :{
+"match_phrase": {
+"description": {
+"query": "Hà Nội"
+}
+}
+}
+}
+},
+"sort" : [
+{ "time" : "desc" }
+]
+}
+
 Bài 3:
 - Code python(main.py) để extract title từ các file data.json
 
@@ -25,7 +90,7 @@ curl -s -H "Content-Type: application/json" -XPOST 10.140.0.8:9200/_bulk --data-
 {
     "suggest": {
         "title-suggest" : {
-            "prefix" : "Thành",
+            "prefix" : "thành",
             "completion" : {
                 "field" : "suggest_title",
                 "skip_duplicates": true,
